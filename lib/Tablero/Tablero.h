@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+#define LedIndicador 15
+
 ///////////////////////////////////////////
 //                 SPI
 ///////////////////////////////////////////
@@ -15,6 +17,12 @@ static const int spiClk = 1000000; // 1 MHz
 ///////////////////////////////////////////
 //           MCP23S17 PUERTOS
 ////////////////////////////////////////// 
+
+//pines interrupciones
+#define INT0_0 34
+
+
+//chips enables
 #define nCS_LEDS_FUNCIONES 32
 #define nCS_LEDS_PROGRAMAS 27
 #define nCS_FICHAS_PUERTO0 21
@@ -39,6 +47,11 @@ static const int spiClk = 1000000; // 1 MHz
 #define IODIR_B_ADDR  0x01  //Direccion del registro IODIR B (para configurar si es salida o entrada)
 #define GPIO_A_ADDR  0x12  //Direccion del registro GPIO A
 #define GPIO_B_ADDR  0x13  //Direccion del registro GPIO B
+#define GPINTEN_A 0x04 //Direccion registro para habilitar interrupcion individual de cada pin del puerto A (0=Disable interrupt, 1=enable)
+#define GPINTEN_B 0x05 //Direccion registro para habilitar interrupcion individual de cada pin del puerto B (0=Disable interrupt, 1=enable)
+#define IOCON_A 0x0A //Direccion registro configuracion puerto a
+#define IOCON_B 0x0B //Direccion registro configuracion puerto b
+
 
 #define IO_OUTPUTS 0x00   //Valor para configurar IO como salida.
 #define IO_INPUTS 0xFF
@@ -82,13 +95,16 @@ static const int spiClk = 1000000; // 1 MHz
 
 void ConfigTablero(); //llamar siempre en setup
 
-void config_sensors_ports(byte CsPuerto,byte chip_address,byte reg_address);
+void config_sensors_ports();
 void write_expansion_port(byte nCs_pin,byte chip_address,byte reg_address,byte data);
 byte read_expansion_port(byte nCs_pin,byte chip_address,byte reg_address);
 byte Leerficha(int NumFicha);
+void TestLeerYMotrarFichas();
 
 void config_leds_Ports();
 void PrenderLed(int  NumFicha);
+void ApagarLedsTablero();
+void PrenderLedsTablero();
 void TestingLeds();
 
 #endif
